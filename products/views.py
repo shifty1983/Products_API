@@ -1,3 +1,4 @@
+from ast import Delete
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -19,7 +20,7 @@ def product_list(request):
         serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def product_detail(request, pk):
     products = get_object_or_404(Products, pk=pk)
     if request.method == 'GET':
@@ -30,3 +31,6 @@ def product_detail(request, pk):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+    elif request.method == 'DELETE':
+        products.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
